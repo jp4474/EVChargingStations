@@ -1,5 +1,41 @@
 # Data
 
+```{r, include = FALSE}
+library(tidyverse)
+```
+
+
 ## Description
 
+This paper utilizes data from multiple sources. The initial dataset, named 'ev_charging_stations,' comprises 191,514 rows and 14 columns. It furnishes details about the operating organization, address of charging stations, types of charging stations, charging capacities, and more, pertaining to electric vehicle charging stations nationwide in South Korea. This dataset is sourced from the Korea Environment Corporation, a governmental entity under the Ministry of Environment of South Korea. The data was last updated on August 23, 2023, with an unknown update frequency.
+
+The second dataset, 'gas_stations_seoul,' contains 1,903 rows and 27 columns, offering information about the petroleum sales permit status of gas stations situated in Seoul, South Korea. This dataset is compiled by the Seoul Metropolitan Government and was last updated on November 11, 2023, with an unknown update frequency.
+
+The methods employed for data collection remain undisclosed. Since both datasets are in Korean, we plan to utilize either the OpenAPI or GoogleTranslateAPI to translate and preprocess the datasets in Python. This preprocessing involves parsing addresses to extract longitude and latitude and implementing filtering.
+
+To access the second dataset, follow this link: 
+
+<https://www.data.go.kr/data/15119741/fileData.do>
+
+To access the second dataset, follow this link: 
+
+<https://data.seoul.go.kr/dataList/OA-16110/S/1/datasetView.do>
+
+
 ## Missing value analysis
+
+#TODO: translate dataframes to English in preprocessing.py
+```{r, include=FALSE}
+ev <- read.csv('data/ev_charging_stations_parsed.csv')
+gas <-  read.csv('data/gas_stations_seoul_parsed.csv')
+```
+
+```{r, include=FALSE}
+na_count_ev <-sapply(ev, function(y) sum(length(which(is.na(y)))))
+print(na_count_ev)
+na_count_gas <-sapply(gas, function(y) sum(length(which(is.na(y)))))
+print(na_count_gas)
+```
+
+
+

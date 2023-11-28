@@ -5,13 +5,10 @@
 * Jun Won Park (jp4474)
 * Sun Young Park (sp0525)
 
-## Description of Data
+## References
 
-There are 200,000 observations which describe the locations of electric vehicle charging stations in South Korea as of 2023, provided by Korea Environment Corporation which is a government entity under the Ministry of Environment of South Korea.
-
-### Optional
-
-- [ ] 1. Choose a theme from [https://bootswatch.com/](https://bootswatch.com/) and replace "cosmo" in `_quarto.yml` with your prefered theme.
+* https://www.data.go.kr/data/15119741/fileData.do
+* https://data.seoul.go.kr/dataList/OA-16110/S/1/datasetView.do
 
 ### Additional features
 

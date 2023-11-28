@@ -4,20 +4,20 @@
     "href": "index.html",
     "title": "A Geospatial Analysis of EV Charging Station Distribution for Sustainable Urban Mobility in South Korea",
     "section": "",
-    "text": "1 Introduction"
+    "text": "1 Introduction\nNumerous pieces of evidence suggest that Earth is experiencing global warming. The Arctic ice is melting, and the sea level rises each year. Temperatures are becoming more extreme, fluctuating from hotter to colder. Additionally, experts predict an imminent depletion of fossil fuels within decades. Researchers from Stanford University forecast the cessation of fossil fuel production by 2052, with reserves running out by 2060. It’s only a matter of time until we exhaust fossil fuels for operating gas cars, necessitating a shift to a more sustainable energy source.\nIn the past decade, electric vehicles have emerged as a new and rapidly growing form of transportation. According to the US Bureau of Labor Statistics, the market share of electric vehicle sales surged from 0.17% in 2011 to 4.6% in 2021. Clearly, electric vehicles are gaining popularity over time.\nIt has become commonplace to witness numerous automobile manufacturers, such as Tesla and Hyundai, actively promoting electric vehicles over gas-powered cars. Furthermore, governments worldwide are implementing policies to encourage the adoption of electric vehicles as a climate change mitigation measure. Some governments even provide subsidies, rebates, or tax credits to support the sales of electric vehicles.\nHowever, transitioning from gas cars to electric vehicles still faces significant challenges. A prominent issue frequently discussed by the public is the lack of infrastructure for electric vehicles, notably the scarcity of widely available charging stations and repair centers compared to their gas-powered counterparts. This paper aims to investigate and confirm or refute the claim of whether electric vehicle charging stations are widely accessible. We will be focusing on charging stations and gas stations located in Seoul, the largest metropolitan city in South Korea."
   },
   {
     "objectID": "data.html#description",
     "href": "data.html#description",
     "title": "2  Data",
     "section": "2.1 Description",
-    "text": "2.1 Description"
+    "text": "2.1 Description\nThis paper utilizes data from multiple sources. The initial dataset, named ‘ev_charging_stations,’ comprises 191,514 rows and 14 columns. It furnishes details about the operating organization, address of charging stations, types of charging stations, charging capacities, and more, pertaining to electric vehicle charging stations nationwide in South Korea. This dataset is sourced from the Korea Environment Corporation, a governmental entity under the Ministry of Environment of South Korea. The data was last updated on August 23, 2023, with an unknown update frequency.\nThe second dataset, ‘gas_stations_seoul,’ contains 1,903 rows and 27 columns, offering information about the petroleum sales permit status of gas stations situated in Seoul, South Korea. This dataset is compiled by the Seoul Metropolitan Government and was last updated on November 11, 2023, with an unknown update frequency.\nThe methods employed for data collection remain undisclosed. Since both datasets are in Korean, we plan to utilize either the OpenAPI or GoogleTranslateAPI to translate and preprocess the datasets in Python. This preprocessing involves parsing addresses to extract longitude and latitude and implementing filtering.\nTo access the second dataset, follow this link:\nhttps://www.data.go.kr/data/15119741/fileData.do\nTo access the second dataset, follow this link:\nhttps://data.seoul.go.kr/dataList/OA-16110/S/1/datasetView.do"
   },
   {
     "objectID": "data.html#missing-value-analysis",
     "href": "data.html#missing-value-analysis",
     "title": "2  Data",
     "section": "2.2 Missing value analysis",
-    "text": "2.2 Missing value analysis"
+    "text": "2.2 Missing value analysis\n#TODO: translate dataframes to English in preprocessing.py"
   }
 ]
