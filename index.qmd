@@ -5,7 +5,7 @@ In the past decade, electric vehicles have emerged as a new and rapidly growing 
 
 It has become commonplace to witness numerous automobile manufacturers, such as Tesla and Hyundai, actively promoting electric vehicles over gas-powered cars. Furthermore, governments worldwide are implementing policies to encourage the adoption of electric vehicles as a climate change mitigation measure. Some governments even provide subsidies, rebates, or tax credits to support the sales of electric vehicles.
 
-However, transitioning from gas cars to electric vehicles still faces significant challenges. A prominent issue frequently discussed by the public is the lack of infrastructure for electric vehicles, notably the scarcity of widely available charging stations and repair centers compared to their gas-powered counterparts. This paper aims to investigate and confirm or refute the claim of whether electric vehicle charging stations are widely accessible. We will be focusing on charging stations and gas stations located in Seoul, the largest metropolitan city in South Korea. 
+However, transitioning from gas cars to electric vehicles still faces significant challenges. A prominent issue frequently discussed by the public is the lack of infrastructure for electric vehicles, notably the scarcity of widely available charging stations and repair centers compared to their gas-powered counterparts. This paper aims to explore the viability of electric vehicles as a sustainable alternative to gas cars, with a specific focus on the accessibility of charging stations in Seoul, South Korea.
 
 
 
