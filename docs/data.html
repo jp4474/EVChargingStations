@@ -169,8 +169,8 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="technical-description" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="technical-description"><span class="header-section-number">2.1</span> Technical description</h2>
-<p>This paper utilizes data from multiple sources. The initial dataset, named ‘ev_charging_stations,’ comprises 191,514 rows and 14 columns. It furnishes details about the operating organization, address of charging stations, types of charging stations, charging capacities, and more, pertaining to electric vehicle charging stations nationwide in South Korea. This dataset is sourced from the Korea Environment Corporation, a governmental entity under the Ministry of Environment of South Korea. The data was last updated on August 23, 2023, with an unknown update frequency.</p>
-<p>The second dataset, ‘gas_stations_seoul,’ contains 1,903 rows and 5 columns, offering information about the change in petroleum sales permit status of gas stations situated in Seoul, South Korea. This dataset is compiled by the Seoul Metropolitan Government and was last updated on November 11, 2023, with an unknown update frequency.</p>
+<p>This paper utilizes data from multiple sources. The initial dataset, named ‘ev_charging_stations,’ comprises 191,514 rows and 12 columns. It furnishes details about the operating organization, address of charging stations, types of charging stations, charging capacities, and more, pertaining to electric vehicle charging stations nationwide in South Korea. This dataset is sourced from the Korea Environment Corporation, a governmental entity under the Ministry of Environment of South Korea. The data was last updated on August 23, 2023, with an unknown update frequency.</p>
+<p>The second dataset, ‘gas_stations_seoul,’ contains 1,903 rows and 6 columns, offering information about the change in petroleum sales permit status of gas stations situated in Seoul, South Korea. This dataset is compiled by the Seoul Metropolitan Government and was last updated on November 11, 2023, with an unknown update frequency.</p>
 <p>The methods employed for data collection remain undisclosed. Since both datasets are in Korean, we plan to utilize either the OpenAPI or GoogleTranslateAPI to translate and preprocess the datasets in Python. This preprocessing involves parsing addresses to extract longitude and latitude and implementing filtering.</p>
 <p>To access the second dataset, follow this link:</p>
 <p><a href="https://www.data.go.kr/data/15119741/fileData.do" class="uri">https://www.data.go.kr/data/15119741/fileData.do</a></p>
@@ -184,7 +184,63 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="missing-value-analysis" class="level2" data-number="2.3">
 <h2 data-number="2.3" class="anchored" data-anchor-id="missing-value-analysis"><span class="header-section-number">2.3</span> Missing value analysis</h2>
+<p>Due to limited space, only columns with a missing value count greater than 0 are included for the bar plots.</p>
 <div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<caption>New Column Names for EV Dataset</caption>
+<colgroup>
+<col style="width: 3%">
+<col style="width: 1%">
+<col style="width: 3%">
+<col style="width: 3%">
+<col style="width: 8%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 8%">
+<col style="width: 5%">
+<col style="width: 4%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Previous</td>
+<td style="text-align: left;">City</td>
+<td style="text-align: left;">District</td>
+<td style="text-align: left;">Address</td>
+<td style="text-align: left;">Charging.station.name</td>
+<td style="text-align: left;">Facility.classification..large.</td>
+<td style="text-align: left;">Facility.classification..small.</td>
+<td style="text-align: left;">Model..large.</td>
+<td style="text-align: left;">Model..small.</td>
+<td style="text-align: left;">Operating.institution..large.</td>
+<td style="text-align: left;">Operating.institution..small.</td>
+<td style="text-align: left;">Rapid.charging.amount</td>
+<td style="text-align: left;">Charger.type</td>
+<td style="text-align: left;">Charger.ID</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">New</td>
+<td style="text-align: left;">City</td>
+<td style="text-align: left;">Dist.</td>
+<td style="text-align: left;">Add.</td>
+<td style="text-align: left;">Name</td>
+<td style="text-align: left;">FC.L</td>
+<td style="text-align: left;">FC.S</td>
+<td style="text-align: left;">M.L</td>
+<td style="text-align: left;">M.S</td>
+<td style="text-align: left;">OI.L</td>
+<td style="text-align: left;">OI.S</td>
+<td style="text-align: left;">RCA</td>
+<td style="text-align: left;">Type</td>
+<td style="text-align: left;">ID</td>
+</tr>
+</tbody>
+</table>
+</div>
 <div class="cell-output-display">
 <p><img src="data_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -192,9 +248,73 @@ ul.task-list li input[type="checkbox"] {
 <p><img src="data_files/figure-html/unnamed-chunk-2-2.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>Due to limited space, only columns with a missing value count greater than 0 are included.</p>
-<p>The EV dataset has 284 missing entries in the District column. However, this district information can be inferred from the address column in the dataset and address column does not have any missing entry. There are 184,375 missing entries in the Rapid Charging Amount column because not every charger/chaing station is equipped with rapid charging capability.</p>
-<p>To provide brief context, Korea implemented Western-style street name addresses in 2014. Any gas station that closed before 2014 lacks a street name address. Address information can be converted to street name addresses, and vice versa. A close examination of entries missing the Address column reveals that street name addresses are available. Gas stations that are still operating will not have a Date of Closure, and all 1200 entries with missing Date of Closure are currently still operating.</p>
+<p>The EV dataset has 284 missing entries in the District column. However, this district information can be inferred from the address column in the dataset and address column does not have any missing entry.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<caption>New Column Names for EV Dataset</caption>
+<colgroup>
+<col style="width: 3%">
+<col style="width: 1%">
+<col style="width: 3%">
+<col style="width: 3%">
+<col style="width: 8%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 8%">
+<col style="width: 5%">
+<col style="width: 4%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Previous</td>
+<td style="text-align: left;">City</td>
+<td style="text-align: left;">District</td>
+<td style="text-align: left;">Address</td>
+<td style="text-align: left;">Charging.station.name</td>
+<td style="text-align: left;">Facility.classification..large.</td>
+<td style="text-align: left;">Facility.classification..small.</td>
+<td style="text-align: left;">Model..large.</td>
+<td style="text-align: left;">Model..small.</td>
+<td style="text-align: left;">Operating.institution..large.</td>
+<td style="text-align: left;">Operating.institution..small.</td>
+<td style="text-align: left;">Rapid.charging.amount</td>
+<td style="text-align: left;">Charger.type</td>
+<td style="text-align: left;">Charger.ID</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">New</td>
+<td style="text-align: left;">City</td>
+<td style="text-align: left;">Dist.</td>
+<td style="text-align: left;">Add.</td>
+<td style="text-align: left;">Name</td>
+<td style="text-align: left;">FC.L</td>
+<td style="text-align: left;">FC.S</td>
+<td style="text-align: left;">M.L</td>
+<td style="text-align: left;">M.S</td>
+<td style="text-align: left;">OI.L</td>
+<td style="text-align: left;">OI.S</td>
+<td style="text-align: left;">RCA</td>
+<td style="text-align: left;">Type</td>
+<td style="text-align: left;">ID</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell-output-display">
+<p><img src="data_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="data_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The dataframe has been ordered by the License.Date, the date of which the petroleum sales permit was given.</p>
+<p>To provide brief context, Korea implemented Western-style street name addresses (SDAdd.) in 2014, replacing the standard address system they used, denoted by Add.</p>
+<p>Thus, if a gas station closed before 2014 then it may lack a street name address as the data for the station is no longer being tracked. However, Address information can be converted to street name addresses, and vice versa and there is no entry where both address column and street name address column are missing so there is no loss of data here. Indeed, a closer examination of entries missing the Address column reveals that street name addresses are available. Gas stations that are still operating will not have a Date of Closure. Upon closer examination, out of 1200 missing data entries, 563 gas stations are not currently operating with no Date of Closure, and most of these gas stations were given the license in the late 20th century so we suspect that these data were not lost due administration issues. However, since we will only be using the data from the last decade, since EV were only introduced a decade ago, this will not impact our analysis. We see that the businesses that opened earlier in the years have missing SNAdd. (Street Name Address) while the business that opened in recent years have missing Add. (Address).</p>
 <p>Thus, our data does not contain any missing value that may hinder our analysis.</p>
 
 
