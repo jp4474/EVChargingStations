@@ -142,8 +142,7 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#technical-description" id="toc-technical-description" class="nav-link active" data-scroll-target="#technical-description"><span class="header-section-number">2.1</span> Technical description</a></li>
-  <li><a href="#research-plan" id="toc-research-plan" class="nav-link" data-scroll-target="#research-plan"><span class="header-section-number">2.2</span> Research plan</a></li>
-  <li><a href="#missing-value-analysis" id="toc-missing-value-analysis" class="nav-link" data-scroll-target="#missing-value-analysis"><span class="header-section-number">2.3</span> Missing value analysis</a></li>
+  <li><a href="#missing-value-analysis" id="toc-missing-value-analysis" class="nav-link" data-scroll-target="#missing-value-analysis"><span class="header-section-number">2.2</span> Missing value analysis</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/jp4474/EVChargingStations/edit/main/data.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/jp4474/EVChargingStations/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
@@ -169,21 +168,20 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="technical-description" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="technical-description"><span class="header-section-number">2.1</span> Technical description</h2>
-<p>This paper utilizes data from multiple sources. The first raw dataset, named ‘ev_charging_stations_parsed.csv’ comprises 191,514 rows and 13 columns with 191,514 rows and 12 columns after initial processing. It furnishes details about the operating organization, address of charging stations, types of charging stations, charging capacities, and more, pertaining to electric vehicle charging stations nationwide in South Korea. This dataset is sourced from the Korea Environment Corporation, a governmental entity under the Ministry of Environment of South Korea. The data was last updated on August 23, 2023, with an unknown update frequency.</p>
-<p>The second raw dataset, ‘gas_stations_seoul_parsed.csv’ contains 1,903 rows and 6 columns, offering information about the change in petroleum sales permit status of gas stations situated in Seoul, South Korea. This dataset is compiled by the Seoul Metropolitan Government and was last updated on November 11, 2023, with an unknown update frequency.</p>
-<p>The methods employed for data collection remain undisclosed. Since both datasets are in Korean, we plan to utilize either the OpenAPI or GoogleTranslateAPI to translate and preprocess the datasets in Python. This preprocessing involves parsing addresses to extract longitude and latitude and implementing filtering.</p>
-<p>To access the second dataset, follow this link:</p>
+<p>This paper utilizes data from multiple sources. The first raw dataset, named ‘ev_charging_stations_parsed.csv’ comprises 191,514 rows and 13 columns with 191,514 rows and 12 columns after initial processing. It furnishes details about the operating organization, address of charging stations, types of charging stations, charging capacities, and more, pertaining to electric vehicle charging stations nationwide in South Korea. This dataset is sourced from the Korea Environment Corporation, a governmental entity under the Ministry of Environment of South Korea. The data was last updated on August 23, 2023, with an unknown update frequency. The format of the data is all charcters, except for the ID column which is numeric.</p>
+<p>The second raw dataset, ‘gas_stations_seoul_parsed.csv’ contains 1,903 rows and 6 columns, offering information about the change in petroleum sales permit status of gas stations situated in Seoul, South Korea. This dataset is compiled by the Seoul Metropolitan Government and was last updated on November 11, 2023, with an unknown update frequency. The format of the data is all charcters, except for the “License.date” and “Date.of.closure” columns which are date columns.</p>
+<p>The methods employed for data collection remain undisclosed. Since both datasets are in Korean, we plan to utilize either the OpenAPI or GoogleTranslateAPI to translate and preprocess the datasets in Python. This preprocessing involves parsing addresses to extract longitude and latitude coordinates, filtering of columns only necessary for our analysis and encoding categorical columns. Filtering and encoding may be done in R.</p>
+<p>To access the first dataset, follow this link:</p>
 <p><a href="https://www.data.go.kr/data/15119741/fileData.do" class="uri">https://www.data.go.kr/data/15119741/fileData.do</a></p>
+<p>and click on, ‘다운로드’ to download the dataset</p>
 <p>To access the second dataset, follow this link:</p>
 <p><a href="https://data.seoul.go.kr/dataList/OA-16110/S/1/datasetView.do" class="uri">https://data.seoul.go.kr/dataList/OA-16110/S/1/datasetView.do</a></p>
-</section>
-<section id="research-plan" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="research-plan"><span class="header-section-number">2.2</span> Research plan</h2>
+<p>and click on, ‘내려받기(csv)’ to download the dataset ## Research plan</p>
 <p>We will initially assess the relative accessibility of electric vehicle (EV) charging stations in comparison to gas stations. This examination will involve analyzing the density and distribution of both types of fueling infrastructure. Our analysis will take into account factors such as the number of charging ports, charging speed, and the consistent operational status of the stations. This approach aims to provide insights into the practicality and convenience of using electric vehicles in Seoul.</p>
 <p>Subsequently, even though historical data for EV infrastructure is unavailable, we possess historical data for gas stations. This data will be utilized for a longitudinal analysis to uncover trends in accessibility over time. By examining the annual count of operating gas stations, we can discern whether accessibility has improved, worsened, or remained relatively constant throughout the years for gas cars. This information can be utilized to make inferences about the accessibility of EV infrastructure.</p>
 </section>
-<section id="missing-value-analysis" class="level2" data-number="2.3">
-<h2 data-number="2.3" class="anchored" data-anchor-id="missing-value-analysis"><span class="header-section-number">2.3</span> Missing value analysis</h2>
+<section id="missing-value-analysis" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="missing-value-analysis"><span class="header-section-number">2.2</span> Missing value analysis</h2>
 <p>Due to limited space, only columns with a missing value count greater than 0 are included for the bar plots.</p>
 <div class="cell">
 <div class="cell-output-display">

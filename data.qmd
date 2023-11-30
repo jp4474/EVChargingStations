@@ -10,21 +10,23 @@ library(mi)
 
 ## Technical description
 
-This paper utilizes data from multiple sources. The first raw dataset, named 'ev_charging_stations_parsed.csv' comprises 191,514 rows and 13 columns with 191,514 rows and 12 columns after initial processing. It furnishes details about the operating organization, address of charging stations, types of charging stations, charging capacities, and more, pertaining to electric vehicle charging stations nationwide in South Korea. This dataset is sourced from the Korea Environment Corporation, a governmental entity under the Ministry of Environment of South Korea. The data was last updated on August 23, 2023, with an unknown update frequency.
+This paper utilizes data from multiple sources. The first raw dataset, named 'ev_charging_stations_parsed.csv' comprises 191,514 rows and 13 columns with 191,514 rows and 12 columns after initial processing. It furnishes details about the operating organization, address of charging stations, types of charging stations, charging capacities, and more, pertaining to electric vehicle charging stations nationwide in South Korea. This dataset is sourced from the Korea Environment Corporation, a governmental entity under the Ministry of Environment of South Korea. The data was last updated on August 23, 2023, with an unknown update frequency. The format of the data is all charcters, except for the ID column which is numeric.
 
-The second raw dataset, 'gas_stations_seoul_parsed.csv' contains 1,903 rows and 6 columns, offering information about the change in petroleum sales permit status of gas stations situated in Seoul, South Korea. This dataset is compiled by the Seoul Metropolitan Government and was last updated on November 11, 2023, with an unknown update frequency.
+The second raw dataset, 'gas_stations_seoul_parsed.csv' contains 1,903 rows and 6 columns, offering information about the change in petroleum sales permit status of gas stations situated in Seoul, South Korea. This dataset is compiled by the Seoul Metropolitan Government and was last updated on November 11, 2023, with an unknown update frequency. The format of the data is all charcters, except for the "License.date" and "Date.of.closure" columns which are date columns.
 
-The methods employed for data collection remain undisclosed. Since both datasets are in Korean, we plan to utilize either the OpenAPI or GoogleTranslateAPI to translate and preprocess the datasets in Python. This preprocessing involves parsing addresses to extract longitude and latitude and implementing filtering.
+The methods employed for data collection remain undisclosed. Since both datasets are in Korean, we plan to utilize either the OpenAPI or GoogleTranslateAPI to translate and preprocess the datasets in Python. This preprocessing involves parsing addresses to extract longitude and latitude coordinates, filtering of columns only necessary for our analysis and encoding categorical columns. Filtering and encoding may be done in R.
 
-To access the second dataset, follow this link: 
+To access the first dataset, follow this link: 
 
 <https://www.data.go.kr/data/15119741/fileData.do>
+
+and click on, '다운로드' to download the dataset
 
 To access the second dataset, follow this link: 
 
 <https://data.seoul.go.kr/dataList/OA-16110/S/1/datasetView.do>
 
-
+and click on, '내려받기(csv)' to download the dataset
 ## Research plan
 
 We will initially assess the relative accessibility of electric vehicle (EV) charging stations in comparison to gas stations. This examination will involve analyzing the density and distribution of both types of fueling infrastructure. Our analysis will take into account factors such as the number of charging ports, charging speed, and the consistent operational status of the stations. This approach aims to provide insights into the practicality and convenience of using electric vehicles in Seoul.
@@ -46,7 +48,7 @@ kable(ev.name.map, col.names = NULL, caption = "New Column Names for EV Dataset"
 
 colnames(ev) <- ev.new.names
 
-# remove due to duplicate
+# remove duplicate
 ev <- ev %>% select(-RCA)
 
 na_count_ev <-sapply(ev, function(y) sum(length(which(is.na(y))))) %>% 
