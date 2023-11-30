@@ -1,1 +1,11 @@
 # Introduction
+Numerous pieces of evidence suggest that Earth is experiencing global warming. The Arctic ice is melting. The sea level is rising each year. Temperatures are becoming more extreme, fluctuating from hotter to colder. Additionally, experts predict an imminent depletion of fossil fuels within decades. Researchers from Stanford University forecast the cessation of fossil fuel production by 2052, with reserves running out by 2060. It's only a matter of time until we exhaust fossil fuels for operating gas cars, necessitating a shift to a more sustainable energy source.
+
+In the past decade, electric vehicles have emerged as a new and rapidly growing form of transportation. According to the US Bureau of Labor Statistics, the market share of electric vehicle sales surged from 0.17% in 2011 to 4.6% in 2021. Clearly, electric vehicles are gaining popularity over time.
+
+It has become commonplace to witness numerous automobile manufacturers, such as Tesla and Hyundai, actively promoting electric vehicles over gas-powered cars. Furthermore, governments worldwide are implementing policies to encourage the adoption of electric vehicles as a climate change mitigation measure. Some governments even provide subsidies, rebates, or tax credits to support the sales of electric vehicles.
+
+However, transitioning from gas cars to electric vehicles still faces significant challenges. A prominent issue frequently discussed by the public is the lack of infrastructure for electric vehicles, notably the scarcity of widely available charging stations and repair centers compared to their gas-powered counterparts. This paper aims to explore the viability of electric vehicles as a sustainable alternative to gas cars, with a specific focus on the accessibility of charging stations in Seoul, South Korea.
+
+
+

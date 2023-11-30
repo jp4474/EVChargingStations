@@ -1,5 +1,117 @@
 # Data
 
-## Description
+```{r, include = FALSE}
+library(tidyverse)
+library(redav)
+library(knitr)
+library(mi)
+```
+
+
+## Technical description
+
+This paper utilizes data from multiple sources. The initial dataset, named 'ev_charging_stations,' comprises 191,514 rows and 12 columns. It furnishes details about the operating organization, address of charging stations, types of charging stations, charging capacities, and more, pertaining to electric vehicle charging stations nationwide in South Korea. This dataset is sourced from the Korea Environment Corporation, a governmental entity under the Ministry of Environment of South Korea. The data was last updated on August 23, 2023, with an unknown update frequency.
+
+The second dataset, 'gas_stations_seoul,' contains 1,903 rows and 6 columns, offering information about the change in petroleum sales permit status of gas stations situated in Seoul, South Korea. This dataset is compiled by the Seoul Metropolitan Government and was last updated on November 11, 2023, with an unknown update frequency.
+
+The methods employed for data collection remain undisclosed. Since both datasets are in Korean, we plan to utilize either the OpenAPI or GoogleTranslateAPI to translate and preprocess the datasets in Python. This preprocessing involves parsing addresses to extract longitude and latitude and implementing filtering.
+
+To access the second dataset, follow this link: 
+
+<https://www.data.go.kr/data/15119741/fileData.do>
+
+To access the second dataset, follow this link: 
+
+<https://data.seoul.go.kr/dataList/OA-16110/S/1/datasetView.do>
+
+
+## Research plan
+
+We will initially assess the relative accessibility of electric vehicle (EV) charging stations in comparison to gas stations. This examination will involve analyzing the density and distribution of both types of fueling infrastructure. Our analysis will take into account factors such as the number of charging ports, charging speed, and the consistent operational status of the stations. This approach aims to provide insights into the practicality and convenience of using electric vehicles in Seoul.
+
+Subsequently, even though historical data for EV infrastructure is unavailable, we possess historical data for gas stations. This data will be utilized for a longitudinal analysis to uncover trends in accessibility over time. By examining the annual count of operating gas stations, we can discern whether accessibility has improved, worsened, or remained relatively constant throughout the years for gas cars. This information can be utilized to make inferences about the accessibility of EV infrastructure.
 
 ## Missing value analysis
+Due to limited space, only columns with a missing value count greater than 0 are included for the bar plots.
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+ev <- read.csv('data/ev_charging_stations_parsed.csv')
+gas <- read.csv('data/gas_stations_seoul_parsed.csv')
+
+ev <- ev %>%
+  mutate(across(where(is.character), ~ na_if(.,"")))
+
+ev.new.names <- c("City", "Dist.", "Add.", "Name", "FC.L", "FC.S", "M.L", "M.S", "OI.L", "OI.S", "RCA", "Type", "ID")
+ev.name.map <- data.frame(rbind(Previous = colnames(ev), New = ev.new.names))
+kable(ev.name.map, col.names = NULL, caption = "New Column Names for EV Dataset")
+
+colnames(ev) <- ev.new.names
+
+# remove due to duplicate
+ev <- ev %>% select(-RCA)
+
+na_count_ev <-sapply(ev, function(y) sum(length(which(is.na(y))))) %>% 
+  as.data.frame() %>%
+  mutate(Dataset = 1) %>%
+  rownames_to_column()
+
+colnames(na_count_ev) <- c('Column', 'Null_count', 'Dataset')
+
+ggplot(na_count_ev %>% dplyr::filter(Null_count > 0), 
+       aes(x = Column, y = Null_count, label = Null_count)) +
+  geom_col(stat = "identity") +
+  geom_label(data = na_count_ev %>% dplyr::filter(Null_count > 0), vjust = 0.5) + 
+  labs(x = "Column Name", y = "Missing Value Count", main = "Missing Value Count for EV Dataset") 
+plot_missing(ev)
+
+
+```
+The EV dataset has 284 missing entries in the District column. However, this district information can be inferred from the address column in the dataset and address column does not have any missing entry.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+gas <- gas %>%
+  mutate(across(where(is.character), ~ na_if(.,"")))
+
+gas <- gas %>% 
+  mutate(License.date = lubridate::ymd(License.date)) %>%
+  arrange(License.date)
+
+gas.new.names <- c("Status", "Add.", "SNAdd.", "BN", "LD", "DoC")
+gas.name.map <- data.frame(rbind(Previous = colnames(gas), New = gas.new.names))
+kable(ev.name.map, col.names = NULL, caption = "New Column Names for EV Dataset")
+
+colnames(gas) <- gas.new.names
+
+na_count_gas <-sapply(gas, function(y) sum(length(which(is.na(y))))) %>%
+  as.data.frame() %>%
+  mutate(Dataset = 1) %>%
+  rownames_to_column()
+
+colnames(na_count_gas) <- c('Column', 'Null_count', 'Dataset')
+
+ggplot(na_count_gas %>% dplyr::filter(Null_count > 0), 
+       aes(x = Column, y = Null_count, label = Null_count)) +
+  geom_col(stat = "identity") +
+  geom_label(data = na_count_gas %>% dplyr::filter(Null_count > 0), vjust = 0.5) + 
+  labs(x = "Column Name", y = "Missing Value Count", main = "Missing Value Count for Gas Dataset")
+
+plot_missing(gas)
+
+#gas %>% filter(is.na(DoC)) %>% group_by(Status) %>% summarise( n = n())
+
+#gas %>% filter(is.na(DoC), Status == "폐업") 
+
+# gas <- gas %>% mutate(yearOpened = lubridate::year(LD)) %>%
+#   group_by(yearOpened) %>%
+#   filter(is.na(DoC)) %>%
+#   summarise(n = n())
+# 
+# ggplot(gas, aes(x = yearOpened, y = n)) +
+#   geom_line()
+```
+The dataframe has been ordered by the License.Date, the date of which the petroleum sales permit was given. 
+
+To provide brief context, Korea implemented Western-style street name addresses (SDAdd.) in 2014, replacing the standard address system they used, denoted by Add. 
+
+Thus, if a gas station closed before 2014 then it may lack a street name address as the data for the station is no longer being tracked. However, Address information can be converted to street name addresses, and vice versa and there is no entry where both address column and street name address column are missing so there is no loss of data here. Indeed, a closer examination of entries missing the Address column reveals that street name addresses are available. Gas stations that are still operating will not have a Date of Closure. Upon closer examination, out of 1200 missing data entries, 563 gas stations are not currently operating with no Date of Closure, and most of these gas stations were given the license in the late 20th century so we suspect that these data were lost due administration issues. However, since we will only be using the data from the last decade, since EV were only introduced a decade ago, this will not impact our analysis. We see that some businesses that opened before 2014 have missing SNAdd. (Street Name Address) while the business that opened in recent years have missing Add. (Address). 
+
+Thus, our data does not contain any missing value that may hinder our analysis.

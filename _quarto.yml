@@ -6,11 +6,11 @@ execute:
   echo: true
 
 book:
-  title: "YOUR PROJECT TITLE"
+  title: "A Geospatial Analysis of EV Charging Station Distribution for Sustainable Urban Mobility in South Korea"
   author:
-    - AUTHOR1 (UNI1)
-    - AUTHOR2 (UNI2)
-  repo-url: https://github.com/YOUR_GITHUB_ACCOUNT/REPO_NAME
+    - Jun Won Park (jp4474)
+    - Sun Young Park (sp0525)
+  repo-url: https://github.com/jp4474/EVChargingStations
   date: today
   page-footer:
     right: |
@@ -25,7 +25,7 @@ book:
 
 format:
   html:
-    theme: cosmo
+    theme: lux
     code-fold: true
 
 
