@@ -27,6 +27,7 @@ To access the second dataset, follow this link:
 <https://data.seoul.go.kr/dataList/OA-16110/S/1/datasetView.do>
 
 and click on, '내려받기(csv)' to download the dataset
+
 ## Research plan
 
 We will initially assess the relative accessibility of electric vehicle (EV) charging stations in comparison to gas stations. This examination will involve analyzing the density and distribution of both types of fueling infrastructure. Our analysis will take into account factors such as the number of charging ports, charging speed, and the consistent operational status of the stations. This approach aims to provide insights into the practicality and convenience of using electric vehicles in Seoul.
