@@ -12,9 +12,16 @@ library(mi)
 
 This paper utilizes data from multiple sources. The first raw dataset, named 'ev_charging_stations_parsed.csv' comprises 191,514 rows and 13 columns with 191,514 rows and 12 columns after initial processing. It furnishes details about the operating organization, address of charging stations, types of charging stations, charging capacities, and more, pertaining to electric vehicle charging stations nationwide in South Korea. This dataset is sourced from the Korea Environment Corporation, a governmental entity under the Ministry of Environment of South Korea. The data was last updated on August 23, 2023, with an unknown update frequency. The format of the data is all charcters, except for the ID column which is numeric.
 
-The second raw dataset, 'gas_stations_seoul_parsed.csv' contains 1,903 rows and 6 columns, offering information about the change in petroleum sales permit status of gas stations situated in Seoul, South Korea. This dataset is compiled by the Seoul Metropolitan Government and was last updated on November 11, 2023, with an unknown update frequency. The format of the data is all charcters, except for the "License.date" and "Date.of.closure" columns which are date columns.
+The second raw dataset, 'gas_stations_seoul_parsed.csv' contains 1,903 rows and 6 columns, offering information about the change in petroleum sales permit status of gas stations situated in Seoul, South Korea. This dataset is compiled by the Seoul Metropolitan Government and was last updated on November 11, 2023, with an unknown update frequency. The format of the data is all characters, except for the "License.date" and "Date.of.closure" columns which are date columns.
 
-The methods employed for data collection remain undisclosed. Since both datasets are in Korean, we plan to utilize either the OpenAPI or GoogleTranslateAPI to translate and preprocess the datasets in Python. This preprocessing involves parsing addresses to extract longitude and latitude coordinates, filtering of columns only necessary for our analysis and encoding categorical columns. Filtering and encoding may be done in R.
+The third raw dataset, 'Seoul_Yearly_Population.csv,' contains population data for each district in Seoul from 1996 to 2022 without any missing values. This dataset, compiled by the Seoul Metropolitan Government, was last updated earlier this year. The update frequency is currently unknown. The dataset is originally in Korean but has been manually translated into English. The data is formatted using characters.
+
+The methods employed for data collection remain undisclosed. Since both datasets are in Korean, we plan to utilize either the OpenAPI or GoogleTranslateAPI to translate and preprocess the datasets in Python. This preprocessing involves parsing addresses to extract longitude and latitude coordinates, filtering of columns only necessary for our analysis and encoding categorical columns. Filtering and encoding may be done in R. We have translated the files using Document Translator powered by Google due to computational overhead. Follow the directions below to reproduce: 
+1) read the dataset in R and write.csv the dataset with sep = ";"
+2) export the dataset as docx
+3) translate using document translator powered by Google
+4) open the translated docx and export as plain text
+5) change the extension to .csv
 
 To access the first dataset, follow this link: 
 

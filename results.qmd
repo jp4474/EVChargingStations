@@ -1,1 +1,411 @@
 # Results
+
+```{r, include = FALSE}
+library(tidyverse)
+library(redav)
+library(knitr)
+library(quantreg)
+library(ggsurvfit)
+library(gtsummary)
+library(tidycmprsk)
+library(data.table)
+library(tidyverse)
+library(redav)
+library(knitr)
+library(mi)
+library(MASS)
+library(sf)
+library(viridisLite)
+library(spData)
+library(terra) 
+library(broom) 
+library(cartogram)
+library(gganimate)
+library(tweenr)
+library(reshape2)
+
+# devtools::install_github("zabore/condsurv")
+library(condsurv)
+```
+## EV Charging Stations
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+# load ev data
+df_charging_stations <- read.csv('data/ev_charging_stations_seoul.csv')
+df_ev_info <- read.csv('data/ev_info_seoul.csv')
+
+
+# 1. Charging Stations vs Electric Vehicles per District
+# Count the number of charging stations per district in df_charging_stations
+charging_stations_count <- df_charging_stations %>%
+  group_by(District) %>%
+  summarise(Charging_Stations = n())
+
+# Merge this with df_ev_info
+df_merged <- merge(df_ev_info, charging_stations_count, by = "District")
+
+# Create the plot
+mod.wo.outliers <- lm(Charging_Stations ~ Count, data = df_merged %>% filter(Count < 2000))
+
+ggplot(df_merged, aes(x = Count, y = Charging_Stations)) +
+  geom_point() +
+  geom_abline(intercept = coef(mod.wo.outliers)[1], slope = coef(mod.wo.outliers)[2], color = "blue") +
+  xlab("Number of Electric Vehicles") +
+  ylab("Number of Charging Stations") +
+  ggtitle("Charging Stations vs Electric Vehicles per District")
+```
+The plot indicates a positive correlation between the number of electric vehicles and the number of charging stations in each district. The positive slope of the line of best fit suggests that districts with more electric vehicles tend to have more charging stations. This is an expected trend, as more EVs would naturally drive the need for more charging infrastructure. However, there is a significant spread around the line of best fit, indicating that the ratio of charging stations to electric vehicles is not consistent across all districts. Some districts may be under-served relative to the number of EVs, while others may have a surplus of charging stations. The plot suggests that while there is an overall trend towards matching the number of charging stations with the number of electric vehicles, there may be inefficiencies or imbalances in certain areas that could be addressed for better service provision.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+# 2. Population Density vs Electric Vehicle Density
+ggplot(df_ev_info, aes(x = Population, y = Count)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  xlab("Population") +
+  ylab("Number of Electric Vehicles") +
+  ggtitle("Population Density vs Electric Vehicle Density")
+
+```
+This plot illustrates a positive correlation between population size and the number of electric vehicles. This implies that, in general, as the population of a district increases, so does the number of electric vehicles in that district. However, the distribution of points suggests that the relationship is not perfectly linear. There are districts with relatively high populations that do not have as many electric vehicles as might be expected, and conversely, there are districts with lower populations that have a high number of electric vehicles. The confidence interval (shaded area) indicates variability around the line of best fit, suggesting that population size is not the sole factor influencing the number of electric vehicles in a district.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+df_merged$Stations_to_EV_Ratio <- df_merged$Charging_Stations / df_merged$Count
+
+ggplot(df_merged, aes(x = reorder(District, Stations_to_EV_Ratio), y = Stations_to_EV_Ratio)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  xlab("District") +
+  ylab("Charging Stations to EV Ratio") +
+  ggtitle("Charging Stations to EV Ratio per District")
+```
+This graph provides insight into whether there are enough charging stations to meet the needs of the number of electric vehicles in each district. A lower ratio indicates better accessibility. Note that Gangnam-gu has much higher accesibility in comparison to other districts.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+df_merged$EV_Per_Capita <- df_merged$Count / df_merged$Population
+ggplot(df_merged, aes(x = reorder(District, EV_Per_Capita), y = EV_Per_Capita)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  xlab("District") +
+  ylab("EV Penetration Rate (EVs per Capita)") +
+  ggtitle("EV Penetration Rate per District")
+```
+This graph shows the number of EVs per capita, indicating how common EVs are in each district. It is interesting to note that Gangnam-gu has significantly higher EV penetration rate compared to other districts. 
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+ggplot(df_merged, aes(x = Population, y = Charging_Stations, size = Count)) +
+  geom_point(alpha = 0.7) +
+  scale_size_continuous(name = "Number of EVs") +
+  xlab("Population") +
+  ylab("Number of Charging Stations") +
+  ggtitle("Charging Infrastructure vs. Population Density with EV Overlay")
+
+
+```
+This scatter plot can help visualize the relationship between the population density of each district and the density of the charging infrastructure, with the size of the points representing the number of EVs. We see that as the population gets larger, there seems to be more charging stations suggesting a positive correlation between population and number of charging stations.
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+df_merged$Charging_Station_Accessibility <- df_merged$Charging_Stations / df_merged$Population
+
+library(geojsonio)
+
+# Read GeoJSON data from a URL
+seoul_geo <- geojson_read("https://raw.githubusercontent.com/southkorea/seoul-maps/master/kostat/2013/json/seoul_municipalities_geo_simple.json", what = "sp")
+seoul_pg <- read_sf("shape/TL_SCCO_SIG.shp", options = "ENCODING=CP949")
+seoul_pg <- seoul_pg %>% filter(substr(SIG_CD,1,2) == 11)
+
+# Convert to an sf object and calculate centroids
+seoul_geo_sf <- st_as_sf(seoul_geo)
+seoul_centroids <- st_centroid(seoul_geo_sf)
+# Extract coordinates and convert to a data frame
+centroids_coords <- as.data.frame(st_coordinates(seoul_centroids))
+# Add the coordinates as new columns to the seoul_centroids sf object
+seoul_centroids$long <- centroids_coords$X
+seoul_centroids$lat <- centroids_coords$Y
+
+# Merge district data with centroids
+district_data_sf <- merge(df_merged,seoul_centroids, by.x = "District", by.y = "name_eng")
+
+
+df_merged_polygons <- merge(seoul_pg, df_merged, by.x = "SIG_ENG_NM", by.y = "District")
+
+ggplot(df_merged_polygons) +
+  geom_sf(aes(fill = Charging_Station_Accessibility), color = "white") +
+  geom_sf_label(aes(label = SIG_ENG_NM), size = 1.4,label.size = 0, fill = alpha("white", 0.5)) +
+  scale_fill_gradient(low = "yellow", high = "red") +
+  coord_sf() +
+  theme_minimal() +
+  ggtitle("Heatmap of Charging Stations in Seoul") +
+  labs(x = "Longitude", y = "Latitude")
+
+
+```
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+##categotical visualizations
+
+# Visualization 1: Distribution of Charger Types by District
+ggplot(df_charging_stations, aes(x=reorder(District, District, function(x)-length(x)), fill=Charger.type)) +
+  geom_bar() +
+  labs(title="Distribution of Charger Types by District in Seoul", x="District", y="Count") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+# Visualization 2: Availability of Rapid Charging Options
+rapid_charging_data <- df_charging_stations %>% 
+  mutate(RapidCharging = ifelse(grepl('Rapid', Rapid.charging.amount), 'Rapid Charging', 'Standard Charging')) %>%
+  count(RapidCharging)
+
+ggplot(rapid_charging_data, aes(x="", y=n, fill=RapidCharging)) +
+  geom_bar(stat="identity", width=1) +
+  coord_polar(theta="y") +
+  labs(title="Availability of Rapid Charging Options in Seoul", x="", y="") +
+  theme_void()
+
+# Visualization 3: Relationship Between Operating Institution and Charger Type
+ggplot(df_charging_stations, aes(x=Operating.institution, fill=Charger.type)) +
+  geom_bar(position="fill") +
+  labs(title="Operating Institution vs. Charger Type in Seoul", x="Operating Institution", y="Proportion") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+# Visualization 4: Large vs. Small Facility Classifications
+ggplot(df_charging_stations, aes(x=District, fill=Facility.classification..large.)) +
+  geom_bar(position="stack") +
+  labs(title="Large vs. Small Facility Classifications in Seoul Districts", x="District", y="Count") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+
+```
+Distribution of Charger Types by District: A grouped bar chart showing the count of each charger type in each district. This could highlight if certain districts favor particular charger types.
+
+Availability of Rapid Charging Options: A pie chart showing the proportion of charging stations offering rapid charging. This can indicate how well the city caters to the need for quick charging.
+
+Relationship Between Operating Institution and Charger Type: A clustered bar chart showing the frequency of each charger type operated by different institutions. This can reveal if certain institutions prefer specific types of chargers.
+
+Comparison of Large vs. Small Facility Classifications for Charging Stations: A stacked bar chart showing the proportion of large vs. small facility classifications in each district. This might indicate trends in how space is utilized for EV charging facilities.
+
+## Gas Station
+```{r, echo=FALSE, warning=FALSE,message=FALSE}
+gas <- read.csv("data/gas_delimiter_.csv", sep = ";", header= T)
+
+`%notin%` <- Negate(`%in%`)
+
+gas.new.names <- c("Status", "Add.", "SNAdd.", "BN", "LD", "DoC")
+colnames(gas) <- gas.new.names
+
+gas <- gas %>%
+  mutate(across(where(is.character), ~ na_if(.,""))) %>%
+  mutate(across(where(is.character), str_trim)) %>%
+  filter(row_number() %notin% c(1249, 1593, 1580, 1440, 1586, 1740)) %>%
+  filter(grepl("Seoul", Add.)| grepl("Seoul", SNAdd.)) %>%
+  mutate(Add. = str_replace(Add., "Seoul Metropolitan City", "Seoul")) %>%
+  mutate(Add. = str_replace(Add., "Seoul Metropolitan Government", "Seoul")) %>%
+  mutate(Add. = str_replace(Add., "Seoul", "")) %>%
+  separate(Add., into = c("Rest. Add.", "Dist."), sep = " ")
+
+gas <- gas %>% 
+  mutate(LD = lubridate::ymd(LD)) %>%
+  arrange(LD)
+
+gas[is.na(gas$Dist.),]$Dist. <- gas[is.na(gas$Dist.),] %>%
+  mutate(SNAdd. = str_replace(SNAdd., "Seoul Metropolitan City", "Seoul")) %>%
+  mutate(SNAdd. = str_replace(SNAdd., "Seoul Metropolitan Government", "Seoul")) %>%
+  mutate(SNAdd. = str_replace(SNAdd., "Seoul", "")) %>%
+  separate(SNAdd., into = c("Rest. Add.", "Dist."), sep = " ") %>% 
+  dplyr::select(Dist.) %>%
+  pull(Dist.)
+
+# Data
+districts <- c("Gangnam-gu", "Gangdong-gu", "Gangbuk-gu", "Gangseo-gu", "Gwanak-gu", "Gwangjin-gu", "Guro-gu", "Geumcheon-gu", "Nowon-gu", "Dobong-gu", "Dongdaemun-gu", "Dongjak-gu", "Mapo-gu", "Seodaemun-gu", "Seocho-gu", "Seongdong-gu", "Seongbuk-gu", "Songpa-gu", "Yangcheon-gu", "Yeongdeungpo-gu", "Yongsan-gu", "Eunpyeong-gu", "Jongno-gu", "Jung-gu", "Jungnang-gu")
+
+longitude <- c(127.0495556, 127.1258639, 127.0277194, 126.851675, 126.9538444, 127.0845333, 126.8895972,
+               126.9041972, 127.0583889, 127.0495222, 127.0421417, 126.941575, 126.9105306, 126.9388972,
+               127.0348111, 127.039, 127.0203333, 127.1079306, 126.8687083, 126.8983417, 126.9675222, 
+               126.9312417, 126.9816417, 126.9996417, 127.0947778)
+
+latitude <- c(37.514575, 37.52736667, 37.63695556, 37.54815556, 37.47538611, 37.53573889, 37.49265,
+              37.44910833, 37.65146111, 37.66583333, 37.571625, 37.50965556, 37.56070556, 37.57636667,
+              37.48078611, 37.56061111, 37.58638333, 37.51175556, 37.51423056, 37.52361111, 37.53609444,
+              37.59996944, 37.57037778, 37.56100278, 37.60380556)
+
+mapping_df <- data.frame(District = districts, Longitude = longitude, Latitude = latitude)
+
+gas <- merge(gas, mapping_df, by.x = "Dist.", by.y = "District")
+gas$LD <- lubridate::ymd(gas$LD)
+gas$DoC <- lubridate::ymd(gas$DoC)
+
+old_entries <- gas %>% filter(is.na(DoC) & Status != 'Open / Normal')
+
+gas_df <- gas %>% 
+  #filter(row_number() %notin% row_number(old_entries)) %>%
+  filter((is.na(DoC) & Status == 'Open / Normal') | (!is.na(DoC) & Status != 'Open / Normal')) %>%
+  rownames_to_column('ID') %>%
+  dplyr::select(ID, Status, Dist., Longitude, Latitude, LD, DoC)
+  
+gas_df$DoC[is.na(gas_df$DoC)] <- '2025-01-01'
+
+gas_tidy_df <- gas_df %>%
+  transmute(ID, Status, Dist., Longitude, Latitude, Date = map2(as.Date(LD), as.Date(DoC), seq, by = "1 year")) %>%
+  unnest(Date) %>%
+  mutate(Year = lubridate::year(Date)) %>%
+  rownames_to_column('idx') %>%
+  mutate(Status = "Open / Normal")
+
+gas_tidy_df <- gas_tidy_df[!duplicated(gas_tidy_df[,c('ID','Year')]),]
+index <- gas_tidy_df %>% group_by(ID) %>% top_n(1, Date)
+index <- index$idx
+
+gas_tidy_df[gas_tidy_df$idx %in% index,c('Status')] <- 'Closed'
+gas_tidy_df[gas_tidy_df$Date == '2025-01-01', c('Status')] <- 'Open / Normal'
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+ts <- gas_tidy_df %>% 
+  group_by(Year, Status) %>%
+  summarise(count = n())  %>%
+  filter(Year <= 2023)
+
+ggplot(ts, aes(x = Year, y = count)) +
+  facet_grid(rows = vars(Status), scales = "free_y") +
+  geom_line() +
+  geom_point() +
+  labs(y = "Count")
+
+ts_open <- ts %>% filter(Status == 'Open / Normal')
+ts_open$diff_count <- c(0, diff(ts_open$count))
+
+ts_closed <- ts %>% filter(Status != 'Open / Normal')
+ts_closed$diff_count <- c(0, diff(ts_closed$count))
+```
+
+```{r, echo=FALSE, warning=FALSE,message=FALSE}
+ggplot(ts_open, aes(x = Year, y = diff_count)) +
+  geom_line() +
+  geom_point() +
+  labs(y = "Count", main = "Lag (h=1) plot of Operating Gas Stations")
+```
+We observe a decline in the number of open gas stations, indicating that more gas stations are closing than new ones are opening. Additionally, there is a consistent downward trend in the annual closure of gas stations. This trend might be attributed to the decreasing annual opening of gas stations, resulting in a decline in closures. The shift in the number of gas stations in Seoul becomes apparent around 2006, and this downward trajectory is more pronounced when examining the lagged plot of newly opened gas stations.
+
+Seoul has actively promoted various electric vehicle distribution projects, exemplified by the establishment of a dedicated electric vehicle team in 2009. In its 2010 roadmap for green car development, the Ministry of Knowledge Economy outlined plans to produce 1.2 million units and export 900,000 units by 2015, encompassing electric vehicles. Furthermore, in 2011, the Seoul Metropolitan Government unveiled the 'Seoul Electric Vehicle Master Plan 2014,' aiming to operate 30,000 electric vehicles, including electric buses, taxis, and passenger cars, in Seoul by 2014. While the data does not definitively establish a causal relationship between the number of gas stations and EV support policies, we suspect that these policies may have directly contributed to the decrease in gas stations.
+
+
+```{r, echo=FALSE, warning=FALSE,message=FALSE}
+
+ratio_df <- merge(gas_tidy_df %>% group_by(Dist.) %>% summarise(gas_stations_count = n()), 
+                 df_merged,
+                 by.x = "Dist.",
+                 by.y = "District") 
+
+ratio_df <- merge(seoul_pg, ratio_df, by.x="SIG_ENG_NM", by.y = "Dist.") %>% 
+  mutate(Charging_station_to_gas = Count/gas_stations_count)
+
+ggplot(ratio_df) +
+  geom_sf(aes(fill = Charging_station_to_gas), color = "white") +
+  geom_sf_label(aes(label = SIG_ENG_NM), size = 1.4,label.size = 0, fill = alpha("white", 0.5)) +
+  scale_fill_gradient(low = "yellow", high = "red") +
+  coord_sf() +
+  theme_minimal() +
+  ggtitle("Heatmap of Charging Station to Gas Stations Ratio in Seoul") +
+  labs(x = "Longitude", y = "Latitude")
+
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+#| layout-ncol: 2
+
+count_by_year_dist <- merge(seoul_pg, gas_tidy_df, by.x = "SIG_ENG_NM", by.y = "Dist.") %>%
+  group_by(Year, geometry) %>%
+  summarise(count = n())
+
+pop_df <- read.csv("data/Seoul_Yearly_Population.csv")
+pop_df <- pop_df[3:nrow(pop_df),2:ncol(pop_df)]
+colnames(pop_df) <- c("District", 2022:1996)
+
+dist_mapping_df <- seoul_pg %>% as.data.frame() %>% dplyr::select(SIG_KOR_NM, SIG_ENG_NM)
+pop_df <- merge(dist_mapping_df, pop_df, by.x = "SIG_KOR_NM", by.y = "District")
+pop_df <- pop_df %>% dplyr::select(-SIG_KOR_NM)
+pop_df <- pop_df %>% pivot_longer(-SIG_ENG_NM, names_to = "Year", values_to = "population")
+
+final_df <- merge(count_by_year_dist, pop_df)
+final_df <- final_df %>% mutate(population = strtoi(population))
+final_df <- final_df %>% mutate(Gas_station_per_10000_capita = count / population * 10000)
+
+ggplot() +  
+  geom_sf(data = final_df, aes(fill = Gas_station_per_10000_capita)) +
+  facet_wrap(~Year)+
+  scale_fill_gradient(low = "yellow", high = "red") +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+
+ggplot() +  
+  geom_sf(data = final_df, aes(fill = count)) +
+  facet_wrap(~Year)+
+  scale_fill_gradient(low = "yellow", high = "red") +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+```
+
+The left plot illustrates a consistent increase in the number of gas stations per 10,000 capita, reaching its peak in 2010. Following this peak, there is a noticeable decline in the number of gas stations per capita, with the exception of an anomaly observed in 2020. This exception could potentially be attributed to a declining population trend over the years, possibly influenced by a low birth rate. The steady decline in the number of gas stations per capita may indicate a broader shift towards electric vehicles (EVs) and an increasing emphasis on alternative energy sources. As the adoption of EVs rises, the demand for traditional fuel stations might decrease, contributing to the observed trend. This shift is more prominently displayed by the graph on the right, which clearly shows the declining trend in the number of gas stations for each district.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+#| layout-ncol: 2
+
+survival_gas <- gas_df %>% mutate(Survived = ifelse(year(DoC) == 2025, 1, 0))
+survival_gas <- survival_gas %>% mutate(startYear = lubridate::year(LD), endYear = ifelse(is.na(DoC), 2025, lubridate::year(DoC)))
+survival_gas <- survival_gas %>% mutate(os_yrs = as.duration(LD %--% DoC) / dyears(1))
+
+surv.fit <- survfit(Surv(os_yrs, Survived) ~ 1, data = survival_gas)
+
+survfit2(Surv(os_yrs, Survived) ~ 1, data = survival_gas %>% filter(LD < as.Date('2010-01-01'))) %>% 
+  ggsurvfit() +
+  labs(
+    x = "Years",
+    y = "Overall survival probability"
+  ) +
+  expand_limits(x = 0, y = 0) +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 25)) 
+  labs(title = "Pre 2010")
+
+survival_gas_2010 <- gas_df[gas_df$LD >= as.Date('2010-01-01') & gas_df$DoC >= as.Date('2010-01-01'),]
+survival_gas_2010 <-survival_gas_2010 %>% 
+  mutate(Survived = ifelse(year(DoC) == 2025, 1, 0))
+
+survival_gas_2010 <- survival_gas_2010 %>% mutate(startYear = lubridate::year(LD), endYear = ifelse(is.na(DoC), 2025, lubridate::year(DoC)))
+survival_gas_2010 <- survival_gas_2010 %>% mutate(os_yrs = as.duration(LD %--% DoC) / dyears(1))
+
+surv.fit.2 <- survfit(Surv(os_yrs, Survived) ~ 1, data = survival_gas_2010)
+
+survfit2(Surv(os_yrs, Survived) ~ 1, data = survival_gas_2010) %>% 
+  ggsurvfit() +
+  labs(
+    x = "Years",
+    y = "Overall survival probability"
+  ) +
+  expand_limits(x = 0, y = 0) +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) +
+  labs(title = "Post 2010")
+
+
+```
+The survival trajectories of gas stations in Seoul before and after 2010 are clearly different, suggesting a transformative change in the industry. One significant factor we suspect is the rise of electric vehicles (EVs). Governments and consumers have increasingly prioritized clean energy solutions, leading to a potential decline in traditional gasoline-powered vehicles and subsequently affecting the viability of gas stations.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+survived <- gas %>% filter(Status == "Open / Normal") %>% group_by(Dist.) %>% summarise(Gas_Count = n())
+
+ev_vs_gas <- merge(df_merged, survived, by.x = "District", by.y = "Dist.") %>%
+  mutate(Gas_Count_Per_10000 = Gas_Count/Population * 10000,
+         Ev_Count_Per_10000 = Count/Population * 10000)
+
+```

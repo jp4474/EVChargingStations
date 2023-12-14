@@ -1,1 +1,32 @@
 # Conclusion
+From our analysis of gas stations over time, we have even more reason to believe that Electric Vehicles are emerging as the next transportation method. Indeed, based on the analysis, the accessibility of the Electric Vehicle charging stations in Seoul is very accessible. In fact, in some districts, there are more Electric Vehicle chargers than that of number of cars suggesting that the Electric Vehicle infrastructure is keeping pace with, if not surpassing, the increasing demand. The density and distribution of charging stations indicate a robust and well-established EV infrastructure in Seoul. However,a notable inconvenience for EV consumers is the absence of rapid charging stations. The longitudinal analysis of gas stations provides a valuable insights into the energy industry. The trends observed in the consistent decline raise suggests a shift in consumer preference towards electric vehicles, contributing to the gradual decline in gas staions. 
+In conclusion, the evidence suggests that the momentum is firmly in favor of electric vehicles.
+
+It is essential to note its limitations. One notable limitation is the absence of historical data specifically dedicated to electric vehicle infrastructure. The reliance on gas station data as a proxy may introduce uncertainties, as the two types of fueling infrastructure may not directly correlate in terms of growth patterns and usage. Additionally, the analysis focused on quantitative aspects such as the number of charging ports and operational status, but qualitative factors like user experience (charging speed), ease of payment, and the availability of amenities were not fully explored. These aspects could significantly impact the perceived accessibility and convenience of EV charging stations. Furthermore, the scope of the study is confined to the city of Seoul, and the findings may not be fully generalizable to regions with different demographic, economic, infrastructural characteristics, or policies.
+
+One can consider conducting a more in-depth qualitative analysis focusing on user experiences with EV charging stations. This could involve surveys, interviews, or observational studies to understand factors such as charging speed, ease of payment, and the overall satisfaction of EV users. In addition, one can extend the study to other cities with same demographics and infrastructure characteristics which can provide a broader perspective on the variations in EV infrastructure development.
+
+We have come to recognize the pivotal importance of well-managed data sources in our work. In particular, we have found ourselves depending on data from gas stations and utilizing the findings of longitudinal studies as a proxy for comprehending Electric Vehicles. This emphasizes the crucial importance of obtaining precise and reliable data for the purpose of researching and developing impactful policies.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

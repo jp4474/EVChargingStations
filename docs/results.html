@@ -137,7 +137,14 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#ev-charging-stations" id="toc-ev-charging-stations" class="nav-link active" data-scroll-target="#ev-charging-stations"><span class="header-section-number">3.1</span> EV Charging Stations</a></li>
+  <li><a href="#gas-station" id="toc-gas-station" class="nav-link" data-scroll-target="#gas-station"><span class="header-section-number">3.2</span> Gas Station</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/jp4474/EVChargingStations/edit/main/results.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/jp4474/EVChargingStations/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -159,8 +166,115 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
+<section id="ev-charging-stations" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="ev-charging-stations"><span class="header-section-number">3.1</span> EV Charging Stations</h2>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The plot indicates a positive correlation between the number of electric vehicles and the number of charging stations in each district. The positive slope of the line of best fit suggests that districts with more electric vehicles tend to have more charging stations. This is an expected trend, as more EVs would naturally drive the need for more charging infrastructure. However, there is a significant spread around the line of best fit, indicating that the ratio of charging stations to electric vehicles is not consistent across all districts. Some districts may be under-served relative to the number of EVs, while others may have a surplus of charging stations. The plot suggests that while there is an overall trend towards matching the number of charging stations with the number of electric vehicles, there may be inefficiencies or imbalances in certain areas that could be addressed for better service provision.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>This plot illustrates a positive correlation between population size and the number of electric vehicles. This implies that, in general, as the population of a district increases, so does the number of electric vehicles in that district. However, the distribution of points suggests that the relationship is not perfectly linear. There are districts with relatively high populations that do not have as many electric vehicles as might be expected, and conversely, there are districts with lower populations that have a high number of electric vehicles. The confidence interval (shaded area) indicates variability around the line of best fit, suggesting that population size is not the sole factor influencing the number of electric vehicles in a district.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>This graph provides insight into whether there are enough charging stations to meet the needs of the number of electric vehicles in each district. A lower ratio indicates better accessibility. Note that Gangnam-gu has much higher accesibility in comparison to other districts.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>This graph shows the number of EVs per capita, indicating how common EVs are in each district. It is interesting to note that Gangnam-gu has significantly higher EV penetration rate compared to other districts.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>This scatter plot can help visualize the relationship between the population density of each district and the density of the charging infrastructure, with the size of the points representing the number of EVs. We see that as the population gets larger, there seems to be more charging stations suggesting a positive correlation between population and number of charging stations.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-8-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-8-3.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-8-4.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Distribution of Charger Types by District: A grouped bar chart showing the count of each charger type in each district. This could highlight if certain districts favor particular charger types.</p>
+<p>Availability of Rapid Charging Options: A pie chart showing the proportion of charging stations offering rapid charging. This can indicate how well the city caters to the need for quick charging.</p>
+<p>Relationship Between Operating Institution and Charger Type: A clustered bar chart showing the frequency of each charger type operated by different institutions. This can reveal if certain institutions prefer specific types of chargers.</p>
+<p>Comparison of Large vs.&nbsp;Small Facility Classifications for Charging Stations: A stacked bar chart showing the proportion of large vs.&nbsp;small facility classifications in each district. This might indicate trends in how space is utilized for EV charging facilities.</p>
+</section>
+<section id="gas-station" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="gas-station"><span class="header-section-number">3.2</span> Gas Station</h2>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>We observe a decline in the number of open gas stations, indicating that more gas stations are closing than new ones are opening. Additionally, there is a consistent downward trend in the annual closure of gas stations. This trend might be attributed to the decreasing annual opening of gas stations, resulting in a decline in closures. The shift in the number of gas stations in Seoul becomes apparent around 2006, and this downward trajectory is more pronounced when examining the lagged plot of newly opened gas stations.</p>
+<p>Seoul has actively promoted various electric vehicle distribution projects, exemplified by the establishment of a dedicated electric vehicle team in 2009. In its 2010 roadmap for green car development, the Ministry of Knowledge Economy outlined plans to produce 1.2 million units and export 900,000 units by 2015, encompassing electric vehicles. Furthermore, in 2011, the Seoul Metropolitan Government unveiled the ‘Seoul Electric Vehicle Master Plan 2014,’ aiming to operate 30,000 electric vehicles, including electric buses, taxis, and passenger cars, in Seoul by 2014. While the data does not definitively establish a causal relationship between the number of gas stations and EV support policies, we suspect that these policies may have directly contributed to the decrease in gas stations.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="results_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="results_files/figure-html/unnamed-chunk-13-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</div>
+<p>The left plot illustrates a consistent increase in the number of gas stations per 10,000 capita, reaching its peak in 2010. Following this peak, there is a noticeable decline in the number of gas stations per capita, with the exception of an anomaly observed in 2020. This exception could potentially be attributed to a declining population trend over the years, possibly influenced by a low birth rate. The steady decline in the number of gas stations per capita may indicate a broader shift towards electric vehicles (EVs) and an increasing emphasis on alternative energy sources. As the adoption of EVs rises, the demand for traditional fuel stations might decrease, contributing to the observed trend. This shift is more prominently displayed by the graph on the right, which clearly shows the declining trend in the number of gas stations for each district.</p>
+<div class="cell quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="results_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<pre><code>$main
+[1] "Pre 2010"
+
+attr(,"class")
+[1] "labels"</code></pre>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="results_files/figure-html/unnamed-chunk-14-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</div>
+<p>The survival trajectories of gas stations in Seoul before and after 2010 are clearly different, suggesting a transformative change in the industry. One significant factor we suspect is the rise of electric vehicles (EVs). Governments and consumers have increasingly prioritized clean energy solutions, leading to a potential decline in traditional gasoline-powered vehicles and subsequently affecting the viability of gas stations.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -416,7 +530,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/jp4474/EVChargingStations/edit/main/results.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/jp4474/EVChargingStations/issues/new" class="toc-action">Report an issue</a></p></div></div></div>
+    </div>
     <div class="nav-footer-right">This book was built with <a href="https://quarto.org/">Quarto</a>.</div>
   </div>
 </footer>
