@@ -23,8 +23,9 @@ library(cartogram)
 library(gganimate)
 library(tweenr)
 library(reshape2)
+library(scales)
 
-# devtools::install_github("zabore/condsurv")
+#devtools::install_github("zabore/condsurv")
 library(condsurv)
 ```
 ## EV Charging Stations
@@ -63,29 +64,36 @@ ggplot(df_ev_info, aes(x = Population, y = Count)) +
   geom_smooth(method = "lm") +
   xlab("Population") +
   ylab("Number of Electric Vehicles") +
-  ggtitle("Population Density vs Electric Vehicle Density")
+  ggtitle("Population Density vs Electric Vehicle Density") +
+  scale_x_continuous(labels = comma_format())  
 
 ```
 This plot illustrates a positive correlation between population size and the number of electric vehicles. This implies that, in general, as the population of a district increases, so does the number of electric vehicles in that district. However, the distribution of points suggests that the relationship is not perfectly linear. There are districts with relatively high populations that do not have as many electric vehicles as might be expected, and conversely, there are districts with lower populations that have a high number of electric vehicles. The confidence interval (shaded area) indicates variability around the line of best fit, suggesting that population size is not the sole factor influencing the number of electric vehicles in a district.
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
 df_merged$Stations_to_EV_Ratio <- df_merged$Charging_Stations / df_merged$Count
 
-ggplot(df_merged, aes(x = reorder(District, Stations_to_EV_Ratio), y = Stations_to_EV_Ratio)) +
-  geom_bar(stat = "identity") +
+ggplot(df_merged, aes(x = reorder(District, Stations_to_EV_Ratio), y = Stations_to_EV_Ratio, fill = Stations_to_EV_Ratio)) +
+  geom_bar(stat = "identity", color = "black") +
   coord_flip() +
+  scale_fill_viridis_c() + 
   xlab("District") +
   ylab("Charging Stations to EV Ratio") +
   ggtitle("Charging Stations to EV Ratio per District")
+
 ```
+
 This graph provides insight into whether there are enough charging stations to meet the needs of the number of electric vehicles in each district. A lower ratio indicates better accessibility. Note that Gangnam-gu has much higher accesibility in comparison to other districts.
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
 
 df_merged$EV_Per_Capita <- df_merged$Count / df_merged$Population
-ggplot(df_merged, aes(x = reorder(District, EV_Per_Capita), y = EV_Per_Capita)) +
-  geom_bar(stat = "identity") +
+
+ggplot(df_merged, aes(x = reorder(District, EV_Per_Capita), y = EV_Per_Capita, fill = EV_Per_Capita)) +
+  geom_bar(stat = "identity", color = "black") +
   coord_flip() +
+  scale_fill_viridis_c() + 
   xlab("District") +
   ylab("EV Penetration Rate (EVs per Capita)") +
   ggtitle("EV Penetration Rate per District")
@@ -94,12 +102,14 @@ This graph shows the number of EVs per capita, indicating how common EVs are in 
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
 
-ggplot(df_merged, aes(x = Population, y = Charging_Stations, size = Count)) +
-  geom_point(alpha = 0.7) +
+ggplot(df_merged, aes(x = Population, y = Charging_Stations, size = Count, fill = Charging_Stations)) +
+  geom_point(alpha = 0.7, shape = 21, color = "black") +
   scale_size_continuous(name = "Number of EVs") +
+  scale_fill_viridis_c() + 
   xlab("Population") +
   ylab("Number of Charging Stations") +
-  ggtitle("Charging Infrastructure vs. Population Density with EV Overlay")
+  ggtitle("Charging Infrastructure vs. Population Density with EV Overlay") +
+  scale_x_continuous(labels = comma_format())  
 
 
 ```
@@ -144,48 +154,65 @@ ggplot(df_merged_polygons) +
 
 ```
 
+The color intensity serves as a visual indicator of the ratio of charging stations to the population in each district. Darker shades represent higher accessibility, suggesting a favorable balance of charging infrastructure relative to the population. Notably, districts such as Gangnam-gu and Seocho-gu exhibit deep colors, indicating robust charging station accessibility. These areas appear well-prepared to support the electric vehicle population. Conversely, districts like Nowon-gu and Yangcheon-gu, depicted in lighter colors, indicate comparatively lower accessibility. This suggests a potential need for increased charging station installations to better accommodate the growing demand for electric vehicles in these regions. The heatmap serves as a valuable tool for urban planning, offering insights to guide infrastructure development and enhance the overall viability of electric vehicles across Seoul.
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
 ##categotical visualizations
 
-# Visualization 1: Distribution of Charger Types by District
-ggplot(df_charging_stations, aes(x=reorder(District, District, function(x)-length(x)), fill=Charger.type)) +
+# Visualization 1: Distribution of Charger Model by District
+ggplot(df_charging_stations, aes(x=reorder(District, District, function(x)-length(x)), fill=Model)) +
   geom_bar() +
-  labs(title="Distribution of Charger Types by District in Seoul", x="District", y="Count") +
+  labs(title="Distribution of Charger Model by District in Seoul", x="District", y="Count") +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-# Visualization 2: Availability of Rapid Charging Options
+# Calculate percentages and round to two decimals
 rapid_charging_data <- df_charging_stations %>% 
   mutate(RapidCharging = ifelse(grepl('Rapid', Rapid.charging.amount), 'Rapid Charging', 'Standard Charging')) %>%
-  count(RapidCharging)
+  count(RapidCharging) %>%
+  mutate(percentage = round(n / sum(n) * 100, 2))  
 
-ggplot(rapid_charging_data, aes(x="", y=n, fill=RapidCharging)) +
-  geom_bar(stat="identity", width=1) +
-  coord_polar(theta="y") +
-  labs(title="Availability of Rapid Charging Options in Seoul", x="", y="") +
+# Plot the pie chart with rounded percentages
+ggplot(rapid_charging_data, aes(x = "", y = n, fill = RapidCharging)) +
+  geom_bar(stat = "identity", width = 1) +
+  geom_text(aes(label = paste0(percentage, "%")), position = position_stack(vjust = 0.5)) +  
+  coord_polar(theta = "y") +
+  labs(title = "Availability of Rapid Charging Options in Seoul", x = "", y = "") +
   theme_void()
 
-# Visualization 3: Relationship Between Operating Institution and Charger Type
-ggplot(df_charging_stations, aes(x=Operating.institution, fill=Charger.type)) +
-  geom_bar(position="fill") +
-  labs(title="Operating Institution vs. Charger Type in Seoul", x="Operating Institution", y="Proportion") +
+# Visualization 3: Relationship Between Operating Institution and Charger Model
+# Calculate proportions within each group
+prop_data <- df_charging_stations %>%
+  group_by(Operating.institution, Model) %>%
+  summarise(Count = n()) %>%
+  group_by(Operating.institution) %>%
+  mutate(Proportion = Count / sum(Count))
+
+# Plot the side-by-side bar chart with proportions
+ggplot(prop_data, aes(x = Operating.institution, y = Proportion, fill = Model)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Operating Institution vs. Charger Model in Seoul", x = "Operating Institution", y = "Proportion") +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-# Visualization 4: Large vs. Small Facility Classifications
-ggplot(df_charging_stations, aes(x=District, fill=Facility.classification..large.)) +
+# change col name for the graph
+colnames(df_charging_stations)[colnames(df_charging_stations) == 'Facility.classification..large.'] <- 'Facility'
+
+# Visualization 4: EV Charger Stations' Facility Classifications in Seoul
+ggplot(df_charging_stations, aes(x=District, fill=Facility)) +
   geom_bar(position="stack") +
-  labs(title="Large vs. Small Facility Classifications in Seoul Districts", x="District", y="Count") +
+  labs(title="EV Charger Stations' Facility Classifications in Seoul", x="District", y="Count") +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 
 ```
-Distribution of Charger Types by District: A grouped bar chart showing the count of each charger type in each district. This could highlight if certain districts favor particular charger types.
+Distribution of Charger Model by District: A grouped bar chart showing the count of each charger model in each district. All of the districts show a higher prevalence of Slow charger model and none of the districs have a balanced distribution of slow and fast charger model.This suggests the need of fast model type of charging infrastructure across districts, indicating potential preferences or infrastructure planning.
 
-Availability of Rapid Charging Options: A pie chart showing the proportion of charging stations offering rapid charging. This can indicate how well the city caters to the need for quick charging.
+Availability of Rapid Charging Options: A pie chart showing the proportion of charging stations offering rapid charging. The very low percentage of Rapid Charging options(< 1%) suggests the need of focus on providing quick charging solutions in Seoul which will contribute to enhanced accessibility for EV users.
 
-Relationship Between Operating Institution and Charger Type: A clustered bar chart showing the frequency of each charger type operated by different institutions. This can reveal if certain institutions prefer specific types of chargers.
+Relationship Between Operating Institution and Charger Model: A clustered bar chart showing the frequency of each charger model operated by different institutions. This reveals distinct charging model preferences among different operating institutions in Seoul. Notably, the Environmental Ministry exclusively employs fast charging models, suggesting a strategic choice aligned with their goals. In contrast, the Local Government exhibits a mix of fast and slow models, with a preference for fast charging. Other agencies, in general, favor slow models, potentially driven by factors such as cost-effectiveness or specific operational considerations. Moreover, the subset of other agencies that receive subsidies overwhelmingly invests in slow charging models, indicating the influence of financial incentives on charging infrastructure choices. This diversity in preferences underscores the importance of understanding the nuanced factors guiding EV charger model selection among various institutions, with potential implications for infrastructure planning and policy considerations.
 
-Comparison of Large vs. Small Facility Classifications for Charging Stations: A stacked bar chart showing the proportion of large vs. small facility classifications in each district. This might indicate trends in how space is utilized for EV charging facilities.
+EV Charger Stations' Facility Classifications in Seoul: This stacked bar chart provides an overview of the facility classifications of EV charger stations across different districts in Seoul.This indicate a significant concentration of EV charger stations within the category of "Apartment Complex Facility" across various districts in Seoul. However, there is a notable scarcity of charging stations in other facilities such as "Educational and Cultural Facility" and "Parking Facility." This dominance of charger stations in apartment complexes may imply challenges in accessibility for individuals who do not reside in these areas. The limited presence in facilities like educational and cultural establishments or parking facilities suggests potential gaps in accessibility for those who rely on EV charging services outside residential contexts. This insight underscores the importance of strategically expanding charging infrastructure to ensure broader accessibility and convenience for a diverse range of users, addressing potential challenges associated with exclusive reliance on apartment complexes for EV charging needs.
+
+
 
 ## Gas Station
 ```{r, echo=FALSE, warning=FALSE,message=FALSE}
