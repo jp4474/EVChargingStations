@@ -157,6 +157,8 @@ ggplot(df_merged_polygons) +
 The color intensity serves as a visual indicator of the ratio of charging stations to the population in each district. Darker shades represent higher accessibility, suggesting a favorable balance of charging infrastructure relative to the population. Notably, districts such as Gangnam-gu and Seocho-gu exhibit deep colors, indicating robust charging station accessibility. These areas appear well-prepared to support the electric vehicle population. Conversely, districts like Nowon-gu and Yangcheon-gu, depicted in lighter colors, indicate comparatively lower accessibility. This suggests a potential need for increased charging station installations to better accommodate the growing demand for electric vehicles in these regions. The heatmap serves as a valuable tool for urban planning, offering insights to guide infrastructure development and enhance the overall viability of electric vehicles across Seoul.
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
+#| layout-ncol: 2
+
 ##categotical visualizations
 
 # Visualization 1: Distribution of Charger Model by District
@@ -360,7 +362,7 @@ final_df <- merge(count_by_year_dist, pop_df)
 final_df <- final_df %>% mutate(population = strtoi(population))
 final_df <- final_df %>% mutate(Gas_station_per_10000_capita = count / population * 10000)
 
-ggplot() +  
+ggplot() +
   geom_sf(data = final_df, aes(fill = Gas_station_per_10000_capita)) +
   facet_wrap(~Year)+
   scale_fill_gradient(low = "yellow", high = "red") +
@@ -371,7 +373,7 @@ ggplot() +
         axis.text.y=element_blank(),
         axis.ticks.y=element_blank())
 
-ggplot() +  
+ggplot() +
   geom_sf(data = final_df, aes(fill = count)) +
   facet_wrap(~Year)+
   scale_fill_gradient(low = "yellow", high = "red") +
@@ -385,7 +387,7 @@ ggplot() +
 
 The left plot illustrates a consistent increase in the number of gas stations per 10,000 capita, reaching its peak in 2010. Following this peak, there is a noticeable decline in the number of gas stations per capita, with the exception of an anomaly observed in 2020. This exception could potentially be attributed to a declining population trend over the years, possibly influenced by a low birth rate. The steady decline in the number of gas stations per capita may indicate a broader shift towards electric vehicles (EVs) and an increasing emphasis on alternative energy sources. As the adoption of EVs rises, the demand for traditional fuel stations might decrease, contributing to the observed trend. This shift is more prominently displayed by the graph on the right, which clearly shows the declining trend in the number of gas stations for each district.
 
-```{r, echo=FALSE, warning=FALSE, message=FALSE}
+```{r, echo=FALSE, warning=FALSE, message=FALSE, results='hide'}
 #| layout-ncol: 2
 
 survival_gas <- gas_df %>% mutate(Survived = ifelse(year(DoC) == 2025, 1, 0))
@@ -408,7 +410,8 @@ survival_gas_2010 <- gas_df[gas_df$LD >= as.Date('2010-01-01') & gas_df$DoC >= a
 survival_gas_2010 <-survival_gas_2010 %>% 
   mutate(Survived = ifelse(year(DoC) == 2025, 1, 0))
 
-survival_gas_2010 <- survival_gas_2010 %>% mutate(startYear = lubridate::year(LD), endYear = ifelse(is.na(DoC), 2025, lubridate::year(DoC)))
+survival_gas_2010 <- survival_gas_2010 %>% 
+  mutate(startYear = lubridate::year(LD), endYear = ifelse(is.na(DoC), 2025, lubridate::year(DoC)))
 survival_gas_2010 <- survival_gas_2010 %>% mutate(os_yrs = as.duration(LD %--% DoC) / dyears(1))
 
 surv.fit.2 <- survfit(Surv(os_yrs, Survived) ~ 1, data = survival_gas_2010)
@@ -423,16 +426,6 @@ survfit2(Surv(os_yrs, Survived) ~ 1, data = survival_gas_2010) %>%
   scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) +
   labs(title = "Post 2010")
 
-
 ```
 The survival trajectories of gas stations in Seoul before and after 2010 are clearly different, suggesting a transformative change in the industry. One significant factor we suspect is the rise of electric vehicles (EVs). Governments and consumers have increasingly prioritized clean energy solutions, leading to a potential decline in traditional gasoline-powered vehicles and subsequently affecting the viability of gas stations.
 
-```{r, echo=FALSE, warning=FALSE, message=FALSE}
-
-survived <- gas %>% filter(Status == "Open / Normal") %>% group_by(Dist.) %>% summarise(Gas_Count = n())
-
-ev_vs_gas <- merge(df_merged, survived, by.x = "District", by.y = "Dist.") %>%
-  mutate(Gas_Count_Per_10000 = Gas_Count/Population * 10000,
-         Ev_Count_Per_10000 = Count/Population * 10000)
-
-```

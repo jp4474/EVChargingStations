@@ -7,7 +7,7 @@ Is the accessibility to electric vehicle infrastructure really as limited as peo
 ## Team Members
 
 * Jun Won Park (jp4474)
-* Sun Young Park (sp0525)
+* Sun Young Park (sp4266)
 
 ## References
 

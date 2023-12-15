@@ -1,13 +1,14 @@
 # Interactive graph
-
 <style>
   * {
     font-family: sans-serif;
   }
 </style> 
 
-<div id="plot">
-</div>
+<p>Click a point to remove.</p>
+<p id="r"></p>
+<div id="correlation"></div>
+<p>The static graph provides us with biased correlation coefficient due to the presence of outliers. We can interactively remove them to see how the correlation coefficient changes.</p>
 
 <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 <script src="scripts/myscript.js"></script>
